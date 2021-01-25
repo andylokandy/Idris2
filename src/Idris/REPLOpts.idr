@@ -8,7 +8,7 @@ import TTImp.TTImp
 
 import Data.List
 import Libraries.Data.List.Extra
-import Data.Strings
+import Data.String
 import System.File
 
 %default total

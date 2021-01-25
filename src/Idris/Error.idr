@@ -19,7 +19,7 @@ import Data.List1
 import Libraries.Data.List.Extra
 import Data.Maybe
 import Data.Stream
-import Data.Strings
+import Data.String
 import Libraries.Data.String.Extra
 import Libraries.Text.PrettyPrint.Prettyprinter
 import Libraries.Text.PrettyPrint.Prettyprinter.Util

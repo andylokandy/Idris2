@@ -12,7 +12,7 @@ import        Data.List
 import        Data.List.Views
 import        Data.List1
 import        Data.Maybe
-import        Data.Strings
+import        Data.String
 
 topDecl : FileName -> IndentInfo -> Rule ImpDecl
 -- All the clauses get parsed as one-clause definitions. Collect any

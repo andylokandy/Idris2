@@ -1,7 +1,7 @@
 module Idris.Pretty
 
 import Data.List
-import Data.Strings
+import Data.String
 import Libraries.Control.ANSI.SGR
 import public Libraries.Text.PrettyPrint.Prettyprinter
 import public Libraries.Text.PrettyPrint.Prettyprinter.Render.Terminal

@@ -1,7 +1,7 @@
 module Language.JSON.Data
 
 import Data.String.Extra
-import Data.Strings
+import Data.String
 import Data.List
 
 %default total

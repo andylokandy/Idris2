@@ -1,7 +1,7 @@
 module System.File
 
 import Data.List
-import Data.Strings
+import Data.String
 import System.Info
 
 public export

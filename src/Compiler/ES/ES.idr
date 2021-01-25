@@ -3,7 +3,7 @@ module Compiler.ES.ES
 import Compiler.ES.Imperative
 import Libraries.Utils.Hex
 import Data.List1
-import Data.Strings
+import Data.String
 import Libraries.Data.SortedMap
 import Libraries.Data.String.Extra
 
@@ -157,7 +157,7 @@ jsConstant : {auto c : Ref ESs ESSt} -> Constant -> Core String
 jsConstant (I i) = pure $ show i ++ "n"
 jsConstant (BI i) = pure $ show i ++ "n"
 jsConstant (Str s) = pure $ jsString s
-jsConstant (Ch c) = pure $ jsString $ Data.Strings.singleton c
+jsConstant (Ch c) = pure $ jsString $ Data.String.singleton c
 jsConstant (Db f) = pure $ show f
 jsConstant WorldVal = addConstToPreamble "idrisworld" "Symbol('idrisworld')";
 jsConstant (B8 i) = pure $ show i ++ "n"

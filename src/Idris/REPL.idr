@@ -56,7 +56,7 @@ import Data.Maybe
 import Libraries.Data.ANameMap
 import Libraries.Data.NameMap
 import Data.Stream
-import Data.Strings
+import Data.String
 import Libraries.Text.PrettyPrint.Prettyprinter
 import Libraries.Text.PrettyPrint.Prettyprinter.Util
 import Libraries.Text.PrettyPrint.Prettyprinter.Render.Terminal

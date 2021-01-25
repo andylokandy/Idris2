@@ -6,7 +6,7 @@ import Core.TT
 import Data.List
 import Data.List1
 import Libraries.Data.List.Lazy
-import Data.Strings
+import Data.String
 import Libraries.Data.String.Iterator
 
 %default covering

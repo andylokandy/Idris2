@@ -12,7 +12,7 @@ import        Data.List
 import        Data.List.Views
 import        Data.List1
 import        Data.Maybe
-import        Data.Strings
+import        Data.String
 import Libraries.Utils.String
 
 import Idris.Parser.Let

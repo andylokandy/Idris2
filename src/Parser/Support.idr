@@ -8,7 +8,7 @@ import Libraries.Text.PrettyPrint.Prettyprinter.Util
 import Core.TT
 import Data.List
 import Data.List.Views
-import Data.Strings
+import Data.String
 import Parser.Unlit
 import System.File
 

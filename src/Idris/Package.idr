@@ -13,7 +13,7 @@ import Data.List
 import Data.Maybe
 import Data.So
 import Libraries.Data.StringMap
-import Data.Strings
+import Data.String
 import Libraries.Data.StringTrie
 import Data.These
 

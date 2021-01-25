@@ -17,7 +17,7 @@ import Data.List
 import Libraries.Data.DList
 import Libraries.Data.NameMap
 import Data.Nat
-import Data.Strings
+import Data.String
 import Data.Vect
 
 import System

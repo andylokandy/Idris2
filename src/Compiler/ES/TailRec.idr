@@ -2,7 +2,7 @@ module Compiler.ES.TailRec
 
 import Data.Maybe
 import Data.List
-import Data.Strings
+import Data.String
 import Libraries.Data.SortedSet
 import Libraries.Data.SortedMap
 import Core.Name

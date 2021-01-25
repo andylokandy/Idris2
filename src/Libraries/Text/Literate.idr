@@ -27,7 +27,7 @@ import Libraries.Text.Lexer
 
 import Data.List
 import Data.List.Views
-import Data.Strings
+import Data.String
 
 %default total
 

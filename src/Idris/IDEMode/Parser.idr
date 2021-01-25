@@ -7,7 +7,7 @@ import Idris.IDEMode.Commands
 
 import Data.Maybe
 import Data.List
-import Data.Strings
+import Data.String
 import Parser.Lexer.Source
 import Parser.Source
 import Parser.Support

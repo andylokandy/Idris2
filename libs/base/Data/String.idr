@@ -1,4 +1,4 @@
-module Data.Strings
+module Data.String
 
 import Data.List
 import Data.List1

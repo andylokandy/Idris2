@@ -5,7 +5,7 @@ import Core.TT
 import TTImp.TTImp
 
 import Data.List
-import Data.Strings
+import Data.String
 
 import Libraries.Utils.String
 

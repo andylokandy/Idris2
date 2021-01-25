@@ -1,5 +1,5 @@
 import Data.Primitives.Views
-import Data.Strings
+import Data.String
 import System
 
 %default total

@@ -9,7 +9,7 @@ import Control.Monad.State
 
 import Data.List
 import Data.Maybe
-import Data.Strings
+import Data.String
 
 %default total
 

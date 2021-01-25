@@ -14,7 +14,7 @@ import Libraries.Data.ANameMap
 import Data.List
 import Data.Maybe
 import Libraries.Data.NameMap
-import Data.Strings
+import Data.String
 
 -- Add a doc string for a name in the current namespace
 export

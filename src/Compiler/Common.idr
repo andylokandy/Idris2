@@ -17,7 +17,7 @@ import Libraries.Utils.Binary
 import Data.IOArray
 import Data.List
 import Libraries.Data.NameMap
-import Data.Strings
+import Data.String
 
 import System.Directory
 import System.Info

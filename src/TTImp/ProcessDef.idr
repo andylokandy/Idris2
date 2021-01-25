@@ -30,7 +30,7 @@ import TTImp.WithClause
 import Data.Either
 import Data.List
 import Libraries.Data.NameMap
-import Data.Strings
+import Data.String
 import Data.Maybe
 
 import Libraries.Text.PrettyPrint.Prettyprinter

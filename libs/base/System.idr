@@ -2,7 +2,7 @@ module System
 
 import public Data.So
 import Data.List
-import Data.Strings
+import Data.String
 
 support : String -> String
 support fn = "C:" ++ fn ++ ", libidris2_support"
