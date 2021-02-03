@@ -2,6 +2,8 @@ module Libraries.Text.Lexer.Core
 
 import public Libraries.Control.Delayed
 import Libraries.Data.Bool.Extra
+import Data.Fin
+import Data.Vect
 import Data.List
 import Data.Maybe
 import Data.Nat
@@ -121,6 +123,65 @@ scan (SeqSame r1 r2) tok str
          scan r2 tok' rest
 scan (Alt r1 r2) tok str
     = maybe (scan r2 tok str) Just (scan r1 tok str)
+
+public export
+record EnterMode tokenType (modeCount : Nat) where
+    constructor MkEnterMode
+    mode : Fin modeCount
+    exit : Lexer
+    exitMap : String -> tokenType
+
+public export
+TokenMap' : (tokenType : Type) -> (modeCount : Nat) -> Type
+TokenMap' tokenType modeCount = List (Lexer, String -> tokenType, Maybe (tokenType -> EnterMode tokenType modeCount))
+
+tokenise' : (line : Int) -> (col : Int) ->
+            List (WithBounds a) -> List (EnterMode a modeCount) ->
+            Vect modeCount (TokenMap' a modeCount) ->
+            List Char -> (List (WithBounds a), (Int, Int, List Char))
+tokenise' line col acc [] tmap str
+    = (reverse acc, (line, col, str))
+tokenise' line col acc (currMode::modes) tmap str
+    = case getFirstToken [(currMode.exit, currMode.exitMap, Nothing)] str of
+           Just (tok, _, line', col', rest) =>
+                assert_total (tokenise' line' col' (tok :: acc) modes tmap rest)
+           Nothing => case getFirstToken (Vect.index currMode.mode tmap) str of
+                           Just (tok, Just enterMode, line', col', rest) =>
+                                    assert_total (tokenise' line' col' (tok :: acc) (enterMode::currMode::modes) tmap rest)
+                           Just (tok, Nothing, line', col', rest) =>
+                                    assert_total (tokenise' line' col' (tok :: acc) (currMode::modes) tmap rest)
+                           Nothing => (reverse acc, (line, col, str))
+  where
+    countNLs : List Char -> Nat
+    countNLs str = List.length (filter (== '\n') str)
+
+    getCols : List Char -> Int -> Int
+    getCols x c
+         = case span (/= '\n') (reverse x) of
+                (incol, []) => c + cast (length incol)
+                (incol, _) => cast (length incol)
+
+    getFirstToken : TokenMap' a modeCount -> List Char ->
+                    Maybe (WithBounds a, Maybe (EnterMode a modeCount), Int, Int, List Char)
+    getFirstToken [] str = Nothing
+    getFirstToken ((lex, tokFn, modeFn) :: ts) str
+        = case scan lex [] str of
+               Just (tok, rest) =>
+                 let line' = line + cast (countNLs tok)
+                     col' = getCols tok col 
+                     tok' = tokFn (fastPack (reverse tok)) in
+                     Just (MkBounded tok' False line col line' col',
+                           map ($ tok') modeFn, line', col', rest)
+               Nothing => getFirstToken ts str
+
+export
+modeLex : Vect modeCount (TokenMap' a modeCount)
+       -> EnterMode a modeCount
+       -> String 
+       -> (List (WithBounds a), (Int, Int, String))
+modeLex modes initMode str
+    = let (ts, (l, c, str')) = tokenise' 0 0 [] [initMode] modes (unpack str) in
+          (ts, (l, c, fastPack str'))
 
 ||| A mapping from lexers to the tokens they produce.
 ||| This is a list of pairs `(Lexer, String -> tokenType)`

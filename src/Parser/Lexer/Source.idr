@@ -24,7 +24,10 @@ data Token
   = CharLit String
   | DoubleLit Double
   | IntegerLit Integer
-  | StringLit Nat String
+  -- String
+  | StringStart Nat
+  | StringEnd Nat
+  | StringLit String
   -- Identifiers
   | HoleIdent String
   | Ident String
@@ -247,31 +250,44 @@ fromOctLit str
                   Nothing => 0 -- can't happen if the literal lexed correctly
                   Just n => cast n
 
-rawTokens : TokenMap Token
+stringStart : Lexer
+stringStart = many (is '#') <+> '\"'
+
+countHashtag : String -> Nat
+-- countHashtag
+
+stringEnd : (hashtag : Nat) -> Lexer
+stringEnd hashtag = '\"' <+> count (exactly hashtag) (is '#')
+
+rawTokens : TokenMap' Token 4
 rawTokens =
-    [(comment, Comment),
-     (blockComment, Comment),
-     (docComment, DocComment . drop 3),
-     (cgDirective, mkDirective),
+    [(exact "{-", CommentStart, Just $ MkEnterMode 1 (exact "-}") CommentEnd),
+     (exact "--", CommentStart, Just $ MkEnterMode 2 (is '\n') CommentEnd),
+     (comment, Comment, Nothing),
+     (blockComment, Comment, Nothing),
+     (docComment, DocComment . drop 3, Nothing),
+     (cgDirective, mkDirective, Nothing),
      (holeIdent, \x => HoleIdent (assert_total (strTail x)))] ++
     map (\x => (exact x, Symbol)) symbols ++
-    [(doubleLit, \x => DoubleLit (cast x)),
-     (binLit, \x => IntegerLit (fromBinLit x)),
-     (hexLit, \x => IntegerLit (fromHexLit x)),
-     (octLit, \x => IntegerLit (fromOctLit x)),
-     (digits, \x => IntegerLit (cast x)),
-     (stringLit, \x => StringLit 0 (stripQuotes x)),
-     (stringLit1, \x => StringLit 1 (stripSurrounds 2 2 x)),
-     (stringLit2, \x => StringLit 2 (stripSurrounds 3 3 x)),
-     (stringLit3, \x => StringLit 3 (stripSurrounds 4 4 x)),
-     (charLit, \x => CharLit (stripQuotes x)),
-     (dotIdent, \x => DotIdent (assert_total $ strTail x)),
-     (namespacedIdent, parseNamespace),
-     (identNormal, parseIdent),
-     (pragma, \x => Pragma (assert_total $ strTail x)),
-     (space, Comment),
-     (validSymbol, Symbol),
-     (symbol, Unrecognised)]
+    [(doubleLit, \x => DoubleLit (cast x), Nothing),
+     (binLit, \x => IntegerLit (fromBinLit x), Nothing),
+     (hexLit, \x => IntegerLit (fromHexLit x), Nothing),
+     (octLit, \x => IntegerLit (fromOctLit x), Nothing),
+     (digits, \x => IntegerLit (cast x), Nothing),
+     (stringStart, \x => StringStart (countHashtag x),
+        Just $ \StringStart hashtag => MkEnterMode 1 (stringEnd hashtag) (const $ CommentEnd hashtag)),
+     (stringLit, \x => StringLit 0 (stripQuotes x), Nothing),
+     (stringLit1, \x => StringLit 1 (stripSurrounds 2 2 x), Nothing),
+     (stringLit2, \x => StringLit 2 (stripSurrounds 3 3 x), Nothing),
+     (stringLit3, \x => StringLit 3 (stripSurrounds 4 4 x), Nothing),
+     (charLit, \x => CharLit (stripQuotes x), Nothing),
+     (dotIdent, \x => DotIdent (assert_total $ strTail x), Nothing),
+     (namespacedIdent, parseNamespace, Nothing),
+     (identNormal, parseIdent, Nothing),
+     (pragma, \x => Pragma (assert_total $ strTail x), Nothing),
+     (space, Comment, Nothing),
+     (validSymbol, Symbol, Nothing),
+     (symbol, Unrecognised, Nothing)]
   where
     parseIdent : String -> Token
     parseIdent x = if x `elem` keywords then Keyword x
@@ -280,6 +296,17 @@ rawTokens =
     parseNamespace ns = case mkNamespacedIdent ns of
                              (Nothing, ident) => parseIdent ident
                              (Just ns, n)     => DotSepIdent ns n
+
+blockCommentTokenMode = TokenMap' Token 4
+blockCommentTokenMode =
+    [()]
+
+lineCommentTokenMode = TokenMap' Token 4
+lineCommentTokenMode =
+    []
+
+commentStringTokenMode = TokenMap' Token 4
+commentStringTokenMode = [(any, )]
 
 export
 lexTo : (WithBounds Token -> Bool) ->
